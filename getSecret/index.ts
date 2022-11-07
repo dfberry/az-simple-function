@@ -1,30 +1,34 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
-import { getKeyVaultSecret } from '../azberry/key-vault';
-import { isEmptyString } from '../util/strings';
+import { isEmptyString } from '../shared/strings';
+import { getSecret } from '../shared/simple';
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
   try {
+    
     context.log('HTTP trigger function processed a request.');
-    const name = req.query.name || (req.body && req.body.name);
+    const secretName = req.query.secretname || (req.body && req.body.secretname);
 
-    const isEmpty = isEmptyString(name);
-
-    if (isEmpty) {
+    if(isEmptyString(secretName)) {
       context.res = {
-        status: 404
+        status: 404 /* Defaults to 200 */,
+        body: "`secretname param is missing"
       };
       return;
     }
 
-    const secretResult = getKeyVaultSecret(name);
+    const result = await getSecret(secretName);
+
+    console.log("after get secret");
 
     context.res = {
       status: 200 /* Defaults to 200 */,
-      body: {secretResult}
+      body: result
     };
+
+    
   } catch (err) {
     context.res = {
       status: 500,
