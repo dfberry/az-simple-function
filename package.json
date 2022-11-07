@@ -7,13 +7,14 @@
     "watch": "tsc -w",
     "prestart": "npm run build",
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "npx playwright test"
   },
   "dependencies": {
     "@azberry/az-simple": "^0.0.4"
   },
   "devDependencies": {
     "@azure/functions": "^3.0.0",
+    "@playwright/test": "^1.27.1",
     "@types/node": "16.x",
     "typescript": "^4.0.0"
   }
